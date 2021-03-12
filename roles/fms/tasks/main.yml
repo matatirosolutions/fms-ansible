@@ -1,29 +1,29 @@
 ---
-#- name: Make sure the server is up to date
-#  become: true
-#  apt:
-#    autoclean: yes
-#    autoremove: yes
-#    upgrade: yes
-#    update_cache: yes
-#    cache_valid_time: 86400
-#
-#- name: Install Python library installer
-#  become: true
-#  apt:
-#    name: python3-pip
-#    state: latest
-#
-#- name: Install required Python libraries
-#  become: true
-#  pip:
-#    name: pexpect
-#    state: present
-#
-#- name: Create a folder for the installer
-#  file:
-#    path: /tmp/fms
-#    state: directory
+- name: Make sure the server is up to date
+  become: true
+  apt:
+    autoclean: yes
+    autoremove: yes
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: Install Python library installer
+  become: true
+  apt:
+    name: python3-pip
+    state: latest
+
+- name: Install required Python libraries
+  become: true
+  pip:
+    name: pexpect
+    state: present
+
+- name: Create a folder for the installer
+  file:
+    path: /tmp/fms
+    state: directory
 
 - name: Copy the installer to the host
   copy:
