@@ -1,4 +1,4 @@
-#Installing FileMaker server on Ubuntu using Ansible
+# Installing FileMaker server on Ubuntu using Ansible
 
 Recently Claris Inc. released a version of FileMaker server for CentOS. They're now following that up with a version for Ubuntu, which is great news for those of us who already use Ubuntu extensively.
 
@@ -9,7 +9,7 @@ At present the Ubuntu version of FileMaker server is only available to members o
 ## Prerequisite
 You will need to have Ansible installed on your local machine, if not [check out the documentation](https://docs.ansible.com/ansible/latest/installation_guide/index.html).
 
-##Using this playbook
+## Using this playbook
 
 1. Download the current version of FileMaker for Ubuntu, unzip the file and place it into `roles > fms > files`
 1. Open `group_vars > all` in a text editor and update the variables found there
@@ -25,7 +25,7 @@ You will need to have Ansible installed on your local machine, if not [check out
 1. Open `host` in a text editor and add your domain name below `[fms]`   
 1. From a command prompt run `ansible-playbook site.yml -i host`.
 
-##The future
+## The future
 We hope to convert this to a proper Ansible role and add it to Ansible Galaxy once Claris release this version.
 
 It should also be possible to download the installer directly from Claris to the remote server, rather than needing to download the file to the role first.
