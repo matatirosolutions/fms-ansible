@@ -1,0 +1,26 @@
+fqdn:
+
+admin_user:
+admin_password:
+admin_pin:
+
+installer_filename:
+
+ssl_key: |
+    -----BEGIN PRIVATE KEY-----
+
+    -----END PRIVATE KEY-----
+
+ssl_cert: |
+    -----BEGIN CERTIFICATE-----
+
+    -----END CERTIFICATE-----
+
+intermediary_cert: |
+    -----BEGIN CERTIFICATE-----
+
+    -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+
+    -----END CERTIFICATE-----
+

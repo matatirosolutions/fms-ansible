@@ -1,0 +1,96 @@
+---
+#- name: Make sure the server is up to date
+#  become: true
+#  apt:
+#    autoclean: yes
+#    autoremove: yes
+#    upgrade: yes
+#    update_cache: yes
+#    cache_valid_time: 86400
+#
+#- name: Install Python library installer
+#  become: true
+#  apt:
+#    name: python3-pip
+#    state: latest
+#
+#- name: Install required Python libraries
+#  become: true
+#  pip:
+#    name: pexpect
+#    state: present
+#
+#- name: Create a folder for the installer
+#  file:
+#    path: /tmp/fms
+#    state: directory
+
+- name: Copy the installer to the host
+  copy:
+    src: "{{ role_path }}/files/{{ installer_filename }}"
+    dest: "/tmp/fms/{{ installer_filename }}"
+
+- name: Copy the license certificate
+  copy:
+    src: LicenseCert.fmcert
+    dest: /tmp/fms/LicenseCert.fmcert
+
+- name: Copy and populate the Assisted intstall file
+  template:
+    src: Assisted Install.txt.j2
+    dest: /tmp/fms/Assisted Install.txt
+
+- name: Run the installer
+  apt:
+    deb: "/tmp/fms/{{ installer_filename }}"
+  become: true
+  environment:
+    FM_ASSISTED_INSTALL: "/tmp/fms"
+
+- name: Install SSL certificate
+  copy:
+    content: "{{ ssl_cert }}"
+    dest: /etc/ssl/certs/{{ fqdn }}.crt
+    owner: root
+    mode: 0700
+
+- name: Install SSL key
+  copy:
+    content: "{{ ssl_key }}"
+    dest: /etc/ssl/private/{{ fqdn }}.key
+    owner: root
+    mode: 0700
+
+- name: Install Intermediary certificate
+  copy:
+    content: "{{ intermediary_cert }}"
+    dest: /etc/ssl/certs/{{ fqdn }}.chain.crt
+    owner: root
+    mode: 0700
+
+- name: Use fmsadmin to import the SSL certificate
+  expect:
+    command: fmsadmin certificate import /etc/ssl/certs/{{ fqdn }}.crt --keyfile /etc/ssl/private/{{ fqdn }}.key --intermediateCA /etc/ssl/certs/{{ fqdn }}.chain.crt
+    responses:
+      '/usr/bin/fmsadmin: really import certificate\? \(y, n\) \(Warning: server needs to be restarted\) ': 'y'
+      'username \(root\):': "{{ admin_user }}"
+      'password:': "{{ admin_password }}"
+  become: true
+
+- name: Remove the installation directory
+  file:
+    path: /tmp/fms
+    state: absent
+
+- name: Copy and populate the .xfac.json to stop us being asked to import an SSL cert
+  template:
+    src: xfac.json.j2
+    dest: '/opt/FileMaker/FileMaker Server/Admin/FAC/config/.xfac.json'
+    owner: fmserver
+    group: fmsadmin
+    mode: 0775
+
+- name: Restart the server to apply permissions and the imported certificate
+  reboot:
+  become: true
+

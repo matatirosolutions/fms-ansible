@@ -1,0 +1,4 @@
+Host fms.msdev.nz
+    Hostname 139.99.216.31
+    User ubuntu
+    IdentityFile ~/.ssh/msd_shared

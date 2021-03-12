@@ -1,0 +1,12 @@
+---
+- hosts: fms
+  gather_facts: false
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3)
+      register: output
+      changed_when: output.stdout != ""
+    - setup:
+  roles:
+    - fms
+  become: true
