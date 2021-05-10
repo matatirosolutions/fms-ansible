@@ -1,6 +1,6 @@
 .vault-key
 .idea
 group_vars/ovh
-roles/fms/files/filemaker-server_19.2.2.213_amd64.deb
+roles/fms/files/*.deb
 roles/fms/files/LicenseCert.fmcert
 ovh
