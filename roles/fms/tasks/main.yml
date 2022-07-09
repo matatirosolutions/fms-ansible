@@ -8,18 +8,6 @@
     update_cache: yes
     cache_valid_time: 86400
 
-- name: Install Python library installer
-  become: true
-  apt:
-    name: python3-pip
-    state: latest
-
-- name: Install required Python libraries
-  become: true
-  pip:
-    name: pexpect
-    state: present
-
 - name: Create a folder for the installer
   file:
     path: /tmp/fms
@@ -35,7 +23,7 @@
     src: LicenseCert.fmcert
     dest: /tmp/fms/LicenseCert.fmcert
 
-- name: Copy and populate the Assisted intstall file
+- name: Copy and populate the Assisted install file
   template:
     src: Assisted Install.txt.j2
     dest: /tmp/fms/Assisted Install.txt
@@ -68,13 +56,14 @@
     owner: root
     mode: 0700
 
+# Using own certificate
 - name: Use fmsadmin to import the SSL certificate
-  expect:
-    command: fmsadmin certificate import /etc/ssl/certs/{{ fqdn }}.crt --keyfile /etc/ssl/private/{{ fqdn }}.key --intermediateCA /etc/ssl/certs/{{ fqdn }}.chain.crt
-    responses:
-      '/usr/bin/fmsadmin: really import certificate\? \(y, n\) \(Warning: server needs to be restarted\) ': 'y'
-      'username \(root\):': "{{ admin_user }}"
-      'password:': "{{ admin_password }}"
+  shell: fmsadmin certificate import /etc/ssl/certs/{{ fqdn }}.crt --keyfile /etc/ssl/private/{{ fqdn }}.key --intermediateCA /etc/ssl/certs/{{ fqdn }}.chain.crt -y -u "{{ admin_user }}" -p "{{ admin_password }}"
+  become: true
+
+# Using Certbot
+- name: Use fmsadmin to import the SSL certificate
+  shell: fmsadmin certificate import /etc/letsencrypt/archive/{{ fqdn }}/cert1.pem --keyfile /etc/letsencrypt/archive/{{ fqdn }}/privkey1.pem --intermediateCA /etc/letsencrypt/archive/{{ fqdn }}/chain1.pem -y -u "{{ admin_user }}" -p "{{ admin_password }}"
   become: true
 
 - name: Remove the installation directory
@@ -90,7 +79,24 @@
     group: fmsadmin
     mode: 0775
 
+- name: Close the sample file
+  shell: "fmsadmin close {{ database_location }}Sample/FMServer_Sample -f -y -u {{ admin_user }} -p {{ admin_password }}"
+  become: true
+
+- name: Remove the sample file
+  shell: "fmsadmin remove {{ database_location }}Sample/FMServer_Sample -f -y -u {{ admin_user }} -p {{ admin_password }}"
+  become: true
+
+- name: Configure the timezone
+  template: src=timezone.j2 dest=/etc/timezone
+  tags:
+    - timezone
+
+- name: More Configure the timezone
+  file: src=/usr/share/zoneinfo/{{timezone}} dest=/etc/localtime state=link force=yes
+  tags:
+    - timezone
+
 - name: Restart the server to apply permissions and the imported certificate
   reboot:
   become: true
-

@@ -6,6 +6,30 @@ admin_pin:
 
 installer_filename:
 
+# Firewall settings
+firewall_allowed_tcp_ports:
+  - "22"
+  - "80"
+  - "443"
+  - "5003"
+# firewall_additional_rules:
+#   - "iptables -A INPUT -p tcp --dport 15672 -s 51.77.110.203 -j ACCEPT"
+#   - "iptables -A INPUT -p tcp --dport 15672 -s 125.236.205.124 -j ACCEPT"
+# firewall_ip6_additional_rules:
+
+# Certbot
+certbot_auto_renew: true
+certbot_auto_renew_user: "root"
+certbot_auto_renew_hour: 3
+certbot_auto_renew_minute: 30
+certbot_auto_renew_options: "--quiet --no-self-upgrade"
+certbot_create_if_missing: yes
+certbot_create_method: standalone
+certbot_admin_email: you@myour.domain
+certbot_certs:
+  - domains:
+      - "{{ fqdn }}"
+
 ssl_key: |
     -----BEGIN PRIVATE KEY-----
 
