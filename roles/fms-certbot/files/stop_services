@@ -1,0 +1,5 @@
+#!/bin/bash
+# Ansible managed
+
+# echo "stopping service apache2"
+# systemctl stop apache2

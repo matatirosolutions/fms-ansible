@@ -1,19 +1,4 @@
-Host fms.msdev.nz
-    Hostname 139.99.216.31
+Host fms.your-domain.com
+    Hostname xxx.xxx.xxx.xxx
     User ubuntu
-    IdentityFile ~/.ssh/msd_shared
-
-Host fms-ca.msdev.nz
-    Hostname 54.39.182.51
-    User ubuntu
-    IdentityFile ~/.ssh/msd_shared
-
-Host dotfmp.msdev.co.uk
-    Hostname 139.99.217.187
-    User ubuntu
-    IdentityFile ~/.ssh/msd_shared
-
-Host fms.fm-api.com
-    Hostname 54.37.149.221
-    User ubuntu
-    IdentityFile ~/.ssh/msd_shared
+    IdentityFile ~/.ssh/...

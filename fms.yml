@@ -8,8 +8,11 @@
       changed_when: output.stdout != ""
     - setup:
   roles:
-    - geerlingguy.firewall
-#   Enable below if you wish to use Let's Encrpyt SSL certificates.
+#    Enable below if you wish to install a firewall (a very good idea)
+#    - geerlingguy.firewall
+#    Enable below if you wish to use Let's Encrypt SSL certificates (another good idea)
 #    - geerlingguy.certbot
     - fms
+#    If you've enabled Let's encrypt above, also enable this to update the certbot config
+#    - fms-certbot
   become: true

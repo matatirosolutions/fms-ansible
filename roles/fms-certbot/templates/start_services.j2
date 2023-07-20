@@ -1,0 +1,26 @@
+#!/bin/bash
+# Ansible managed
+
+#echo "starting service apache2"
+#systemctl start apache2
+
+edited="$(find /etc/letsencrypt/archive/{{ fqdn }} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" ")"
+filename=$(basename -- "$edited")
+version="${filename//[^0-9]/}"
+echo $version
+
+echo "Removing the current certificate"
+rm -f "/opt/FileMaker/FileMaker Server/CStore/server.pem"
+rm -f "/opt/FileMaker/FileMaker Server/CStore/serverKey.pem"
+
+echo "Importing the new certificate"
+result="$(fmsadmin certificate import /etc/letsencrypt/archive/{{ fqdn }}/cert${version}.pem --keyfile /etc/letsencrypt/archive/{{ fqdn }}/privkey${version}.pem --intermediateCA /etc/letsencrypt/archive/{{ fqdn }}/chain${version}.pem -y -u {{ admin_user }} -p {{ admin_password }})"
+
+echo "Stop services"
+server="$(fmsadmin stop server -u {{ admin_user }} -p {{ admin_password }} -y)"
+admin="$(fmsadmin stop adminserver -u {{ admin_user }} -p {{ admin_password }} -y)"
+
+echo "Restart background process"
+stop="$(service fmshelper stop)"
+start="$(service fmshelper start)"
+echo "Complete"

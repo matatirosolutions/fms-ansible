@@ -1,0 +1,18 @@
+# The GeerlingGuy role only allows 'standalone' as the authenticator, to use webroot instead update
+#     /etc/letsencrypt/renewal/{{ fqdn }}.conf
+# as per below
+# renew_before_expiry = 30 days
+version = {{ le_version }}
+archive_dir = /etc/letsencrypt/archive/{{ fqdn }}
+cert = /etc/letsencrypt/live/{{ fqdn }}/cert.pem
+privkey = /etc/letsencrypt/live/{{ fqdn }}/privkey.pem
+chain = /etc/letsencrypt/live/{{ fqdn }}/chain.pem
+fullchain = /etc/letsencrypt/live/{{ fqdn }}/fullchain.pem
+
+# Options used in the renewal process
+[renewalparams]
+account = {{ le_account }}
+authenticator = webroot
+server = https://acme-v02.api.letsencrypt.org/directory
+[[webroot_map]]
+{{ fqdn }} = /opt/FileMaker/FileMaker Server/NginxServer/htdocs/httpsRoot

@@ -1,0 +1,30 @@
+---
+- name: Retrieve the auto-generated config file
+  fetch:
+    src: "/etc/letsencrypt/renewal/{{ fqdn }}.conf"
+    dest: /tmp/
+    flat: true
+
+- name: load the file into a variable
+  set_fact:
+    content: "{{ lookup('file', '/tmp/{{ fqdn }}.conf') }}"
+
+- name: Extract the version and accountID
+  set_fact:
+    le_version: "{{ content.split('\n').1.split(' = ').1 }}"
+    le_account: "{{ content.split('\n').10.split(' = ').1 }}"
+
+- name: Update the certbot config to use the webroot instead
+  template:
+    src: certbot.conf.j2
+    dest: "/etc/letsencrypt/renewal/{{ fqdn }}.conf"
+
+- name: Update the Certbot stop services task
+  copy:
+    src: stop_services
+    dest: /etc/letsencrypt/renewal-hooks/pre/stop_services
+
+- name: Update the Certbot start services task
+  template:
+    src: start_services.j2
+    dest: /etc/letsencrypt/renewal-hooks/post/start_services

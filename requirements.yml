@@ -1,3 +1,4 @@
 # Install a role from the Ansible Galaxy
+# run
 - src: geerlingguy.firewall
 - src: geerlingguy.certbot

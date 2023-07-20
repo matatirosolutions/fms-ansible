@@ -22,8 +22,8 @@ You will need to have Ansible installed on your local machine, if not [check out
     - `ssl_cert` paste your certificate bewteen `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`
     - `intermediary_cert` add as many intermediary certificates as necesary, each between a set of `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`
 1. Open `ssh_config` in a text editor and update the details there, replacing the domain name, IP address, username and path to the associated ssh key with values applicable to your server.
-1. Open `host` in a text editor and add your domain name below `[fms]`   
-1. From a command prompt run `ansible-playbook site.yml -i host`.
+1. Open `hosts` in a text editor and add your domain name below `[fms]`   
+1. From a command prompt run `ansible-playbook fms.yml -i hosts`.
 
 ## The future
 We hope to convert this to a proper Ansible role and add it to Ansible Galaxy once Claris release this version.

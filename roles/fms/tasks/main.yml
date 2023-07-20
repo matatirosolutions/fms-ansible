@@ -35,31 +35,31 @@
   environment:
     FM_ASSISTED_INSTALL: "/tmp/fms"
 
-- name: Install SSL certificate
-  copy:
-    content: "{{ ssl_cert }}"
-    dest: /etc/ssl/certs/{{ fqdn }}.crt
-    owner: root
-    mode: 0700
-
-- name: Install SSL key
-  copy:
-    content: "{{ ssl_key }}"
-    dest: /etc/ssl/private/{{ fqdn }}.key
-    owner: root
-    mode: 0700
-
-- name: Install Intermediary certificate
-  copy:
-    content: "{{ intermediary_cert }}"
-    dest: /etc/ssl/certs/{{ fqdn }}.chain.crt
-    owner: root
-    mode: 0700
-
-# Using own certificate
-- name: Use fmsadmin to import the SSL certificate
-  shell: fmsadmin certificate import /etc/ssl/certs/{{ fqdn }}.crt --keyfile /etc/ssl/private/{{ fqdn }}.key --intermediateCA /etc/ssl/certs/{{ fqdn }}.chain.crt -y -u "{{ admin_user }}" -p "{{ admin_password }}"
-  become: true
+#- name: Copy SSL certificate
+#  copy:
+#    content: "{{ ssl_cert }}"
+#    dest: /etc/ssl/certs/{{ fqdn }}.crt
+#    owner: root
+#    mode: 0700
+#
+#- name: Copy SSL key
+#  copy:
+#    content: "{{ ssl_key }}"
+#    dest: /etc/ssl/private/{{ fqdn }}.key
+#    owner: root
+#    mode: 0700
+#
+#- name: Copy Intermediary certificate
+#  copy:
+#    content: "{{ intermediary_cert }}"
+#    dest: /etc/ssl/certs/{{ fqdn }}.chain.crt
+#    owner: root
+#    mode: 0700
+#
+## Using own certificate
+#- name: Use fmsadmin to import the SSL certificate
+#  shell: fmsadmin certificate import /etc/ssl/certs/{{ fqdn }}.crt --keyfile /etc/ssl/private/{{ fqdn }}.key --intermediateCA /etc/ssl/certs/{{ fqdn }}.chain.crt -y -u "{{ admin_user }}" -p "{{ admin_password }}"
+#  become: true
 
 # Using Certbot
 - name: Use fmsadmin to import the SSL certificate
@@ -79,13 +79,13 @@
     group: fmsadmin
     mode: 0775
 
-- name: Close the sample file
-  shell: "fmsadmin close {{ database_location }}Sample/FMServer_Sample -f -y -u {{ admin_user }} -p {{ admin_password }}"
-  become: true
-
-- name: Remove the sample file
-  shell: "fmsadmin remove {{ database_location }}Sample/FMServer_Sample -f -y -u {{ admin_user }} -p {{ admin_password }}"
-  become: true
+#- name: Close the sample file
+#  shell: "fmsadmin close {{ database_location }}Sample/FMServer_Sample -f -y -u {{ admin_user }} -p {{ admin_password }}"
+#  become: true
+#
+#- name: Remove the sample file
+#  shell: "fmsadmin remove {{ database_location }}Sample/FMServer_Sample -f -y -u {{ admin_user }} -p {{ admin_password }}"
+#  become: true
 
 - name: Configure the timezone
   template: src=timezone.j2 dest=/etc/timezone
@@ -93,7 +93,7 @@
     - timezone
 
 - name: More Configure the timezone
-  file: src=/usr/share/zoneinfo/{{timezone}} dest=/etc/localtime state=link force=yes
+  file: src=/usr/share/zoneinfo/{{ timezone }} dest=/etc/localtime state=link force=yes
   tags:
     - timezone
 
